@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+<audio>
+    <source id='mp3' src='' />
+</audio>
+<div id='word'> </div>
+</body>
+<script type="text/javascript">
+	var wordlist = [ "hello", "security gate", "people", "square","journey" ];
+	$.ajax({
+		url : "http://api.naturalreaders.com/v2/auth/requesttoken?callback=velo&appid=pelc790w2bx&appsecret=2ma3jkhafcyscswg8wgk00w0kwsog4s",
+	    type:'GET',
+	    dataType:'JSONP'
+	}).done(function(response) {
+		var token = response.requesttoken;
+		$('#word').text("Intoning start ...");
+		var i = 0;	             
+		var intone = setInterval(function(){
+        	var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[i] +'&r=1&s=-10&requesttoken=' + token;
+        	$('audio:first-child').attr('src',url);       	
+        	$('audio')[0].play();
+        	$('#word').text(wordlist[i]);
+        	i++;
+        	if (i == wordlist.length){
+        		window.clearInterval(intone);
+        	}
+       	}, 6000);
+	});
+</script>
+</html>
