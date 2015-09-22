@@ -15,12 +15,11 @@
 	var wordlist = [ "hello", "security gate", "people", "square","journey" ];
 	$.ajax({
 		url : "http://api.naturalreaders.com/v2/auth/requesttoken?callback=velo&appid=pelc790w2bx&appsecret=2ma3jkhafcyscswg8wgk00w0kwsog4s",
-	    type:'GET',
 	    dataType:'JSONP'
 	}).done(function(response) {
 		var token = response.requesttoken;
 		$('#word').text("Intoning start ...");
-		var i = 0;	             
+		var i = 0;
 		var intone = setInterval(function(){
         	var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[i] +'&r=1&s=-10&requesttoken=' + token;
         	$('audio:first-child').attr('src',url);       	
