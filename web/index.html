@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chart List</title>
+<script type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="js/lib/store.js"></script>
+</head>
+<body>
+<div id="chartList"></div>
+<input type="button" value="Enchart" onclick="javascript:window.location.href='chartType.html'"/>
+</body>
+<script type="text/javascript">
+	var charts = window.store.keys();
+	for(var i=0; i<charts.length; i++){
+		$("#chartList").append("<a href='editChart.html?chart="+ charts[i] + "'>"+ charts[i] +"</a><br>");
+	}
+//window.store.get
+</script>
+</html>

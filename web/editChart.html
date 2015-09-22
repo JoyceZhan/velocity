@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Edit Chart</title>
+<script type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="js/jq-ext.js"></script>
+<script type="text/javascript" src="js/lib/store.js"></script>
+<link type="text/css" rel="stylesheet" href="css/editChart.css">
+</head>
+<body>
+Chart Name: <input type="text" id="chartName"/>(Note: If chart name is changed, a new chart is cloned, the old chart won't be deleted.)<br><br>
+<table id="chartTable"></table>
+
+<div class="container">
+	<ul contenteditable="true" id="list">
+	<li></li>
+	</ul>
+</div>
+<div>
+	<a href=javascript:void(); id="saveAll">Save All</a> 
+</div>
+
+</body>
+<script type="text/javascript">
+	var chart = window.store.get($.getUrlParam('chart'));
+	$("#chartName").val(chart.name);
+	var ths="";
+	for(var i = 0; i< chart.content.length; i++){
+		ths = ths + "<th>" +chart.content[i].name+"</th>"; 
+	}
+	$("#chartTable").append("<tr>"+ ths +"</tr>");
+	
+$(document).ready(function() {
+	var list = $('#list');
+	$("#saveAll").click(function(e) {
+		e.preventDefault();
+		alert(list.html());
+	});
+	
+	load();
+	
+	function load() {
+	}
+});
+</script>
+</html>
