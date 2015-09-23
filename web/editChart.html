@@ -10,35 +10,54 @@
 </head>
 <body>
 Chart Name: <input type="text" id="chartName"/>(Note: If chart name is changed, a new chart is cloned, the old chart won't be deleted.)<br><br>
-<table id="chartTable" contenteditable="true" cellspacing ="20px"></table>
 
-
+<table id="chartTable" contenteditable="true" cellspacing ="30px"></table>
 <div>
-	<a href=javascript:void(); id="saveAll">Save All</a> 
+	<a href="javascript:void();" id="saveAll">Save All</a>
+	<a id="entone">Entone</a>
 </div>
 
 </body>
 <script type="text/javascript">
-	var chart = window.store.get($.getUrlParam('chart'));
-	$("#chartName").val(chart.name);
-	var ths="";
-	var tds="";
-	for(var i = 0; i< chart.content.length; i++){
-		ths = ths + "<th>" +chart.content[i].name+"</th>"; 
-		tds = tds +"<td></td>";
-	}
-	$("#chartTable").append("<tr>"+ ths +"</tr>");
-	$("#chartTable").append("<tr>"+ tds +"</tr>");
-$(document).ready(function() {
-	var list = $('#chartTable');
-	$("#saveAll").click(function(e) {
-		e.preventDefault();
-		alert(list.html());
-	});
-	
+$(document).ready(function() {	
 	load();
 	
-	function load() {
+	$("#saveAll").click(function(e) {
+		e.preventDefault();
+		saveAll();
+	});
+	
+	function saveAll(){
+		var chartName = $("#chartName").val();
+		var chart={name: chartName};
+		chart.content = [];		
+		var ths = $('#chartTable tr th');
+		var tds = $('#chartTable tr td');
+		for(var i = 0 ; i < ths.length; i++){
+			var list = $(tds[i]).html();
+			chart.content.push({name: $(ths[i]).text(), words: list.split('<br>') });
+		}
+		
+		window.store.set(chart.name, chart);
+	}
+	
+	function load() {		
+		var chart = window.store.get($.getUrlParam('chart'));
+		$("#chartName").val(chart.name);
+		var ths="";
+		var tds="";
+		var list="";
+		for(var i = 0; i< chart.content.length; i++){
+			ths = ths + "<th>" +chart.content[i].name+"</th>";
+			if(chart.content[i].words){
+				list = chart.content[i].words.join("<br>");
+				
+			}
+			tds = tds +"<td>" + list + "</td>";
+		}
+		$("#chartTable").append("<tr>"+ ths +"</tr>");
+		$("#chartTable").append("<tr>"+ tds +"</tr>");
+		$("#entone").attr('href','intone.html?chart='+$.getUrlParam('chart'));
 	}
 });
 </script>
