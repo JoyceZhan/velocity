@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="js/jq-ext.js"></script>
+<script type="text/javascript" src="js/lib/store.js"></script>
+</head>
+<body>
+<audio>
+    <source id='mp3' src='' />
+</audio>
+<div id='word'> </div>
+<img id="wordimg" onerror="this.style.display='none'""/>
+<div>
+	<a id="edit">Edit</a>
+</div>
+</body>
+<script type="text/javascript">
+$(document).ready(function() {
+	var wordlist = load();
+	$.ajax({
+		url : "http://api.naturalreaders.com/v2/auth/requesttoken?callback=velo&appid=pelc790w2bx&appsecret=2ma3jkhafcyscswg8wgk00w0kwsog4s",
+	    dataType:'JSONP'
+	}).done(function(response) {
+		var token = response.requesttoken;
+		$('#word').text("Intoning start ...");
+		var i = 0;
+		var intone = setInterval(function(){
+        	var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[i] +'&r=1&s=-10&requesttoken=' + token;
+        	$('audio:first-child').attr('src',url);       	
+        	$('audio')[0].play();
+        	$('#word').text(wordlist[i]);
+        	$('#wordimg').attr('src', "img/"+wordlist[i].toLowerCase()+".jpg");
+        	$('#wordimg').css("display", "block");
+        	i++;
+        	if (i >= wordlist.length){
+        		window.clearInterval(intone);
+        		//$('#word').text("Intoning completed.");
+        	}
+       	}, 5000);
+	});
+	
+	
+	function load() {
+		var chart = window.store.get($.getUrlParam('chart'));
+		$("#edit").attr('href','editChart.html?chart='+$.getUrlParam('chart'));
+		var ths="";
+		var tds="";
+		var wordlist=[];
+		for(var i = 0; i< chart.content.length; i++){
+			var words = chart.content[i].words;
+			for(var j=0; j< words.length; j++)
+				if (words[j] != ""){
+					wordlist.push(words[j]);
+				}			
+		}
+		return wordlist;
+	}
+});	
+</script>
+</html>
