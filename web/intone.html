@@ -8,42 +8,56 @@
 <script type="text/javascript" src="js/lib/store.js"></script>
 </head>
 <body>
-<audio> 
+<audio controls='controls'> 
     <source id='mp3' src=''/>
 </audio>
+<input type="button" id="again" value="Again"></input>
 <table id="chartTable" contenteditable="false" cellspacing ="30px"></table>
 <div id='word'> </div>
 <img id="wordimg" onerror="this.style.display='none'""/>
 <div>
-	<a id="edit">Edit</a>
+	<a id="edit">Edit</a>	
 </div>
 </body>
 <script type="text/javascript">
 $(document).ready(function() {
 	var wordlist = load();
+	if(wordlist.length == 0) return;
+	
+	var token,isPlaying=false;
 	$.ajax({
 		url : "http://api.naturalreaders.com/v2/auth/requesttoken?callback=velo&appid=pelc790w2bx&appsecret=2ma3jkhafcyscswg8wgk00w0kwsog4s",
 	    dataType:'JSONP'
 	}).done(function(response) {
-		var token = response.requesttoken;
+		token = response.requesttoken;
 		$('#word').text("Intoning start ...");
-		var i = 0;
-		var intone = setInterval(function(){
-			var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[i] +'&r=1&s=-10&requesttoken=' + token;
-        	$('audio:first-child').attr('src',url); 
-			$('audio')[0].play();
-        	$('#word').text(wordlist[i]);
-        	$('#wordimg').attr('src', "img/"+wordlist[i].toLowerCase()+".jpg");
-        	$('#wordimg').css("display", "block");
-        	i++;
-        	if (i >= wordlist.length){
-        		window.clearInterval(intone);
-        		//$('#word').text("Intoning completed.");
-        	}
-       	}, 5000);
+		isPlaying = true;
+		playAWord(0);
+	});
+	$("#again").click(function(){
+		playAWord(0);
 	});
 	
-
+	function playAWord(i){
+		console.log("play "+i+" : "+wordlist[i]);
+    	$('#word').text(wordlist[i]);
+    	$('#wordimg').attr('src', "img/"+wordlist[i].toLowerCase()+".jpg");
+    	$('#wordimg').css("display", "block");
+    	
+		var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[i] +'&r=1&s=-10&requesttoken=' + token;
+		$('audio:first-child').attr('src',url); 
+		$('audio')[0].play();
+			if(i<= wordlist.length-2){
+			//$('audio:first-child').unbind('ended');
+			$('audio:first-child').bind('ended', function(){
+				console.log($('audio')[0].duration);
+			    setTimeout(playAWord(i+1), 90000);
+			    
+			});
+		}else{
+			$('audio:first-child').unbind('ended');
+		}
+	}
 
 	function load() {
 	    var chart = window.store.get($.getUrlParam('chart'));
@@ -67,6 +81,7 @@ $(document).ready(function() {
 		var wordlist=[];
 		for(var i = 0; i< chart.content.length; i++){
 			var words = chart.content[i].words;
+			if(words == undefined) continue;
 			for(var j=0; j< words.length; j++)
 				if (words[j] != ""){
 					wordlist.push(words[j]);
