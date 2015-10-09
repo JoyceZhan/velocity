@@ -8,9 +8,10 @@
 <script type="text/javascript" src="js/lib/store.js"></script>
 </head>
 <body>
-<audio>
-    <source id='mp3' src='' />
+<audio> 
+    <source id='mp3' src=''/>
 </audio>
+<table id="chartTable" contenteditable="false" cellspacing ="30px"></table>
 <div id='word'> </div>
 <img id="wordimg" onerror="this.style.display='none'""/>
 <div>
@@ -28,9 +29,9 @@ $(document).ready(function() {
 		$('#word').text("Intoning start ...");
 		var i = 0;
 		var intone = setInterval(function(){
-        	var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[i] +'&r=1&s=-10&requesttoken=' + token;
-        	$('audio:first-child').attr('src',url);       	
-        	$('audio')[0].play();
+			var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[i] +'&r=1&s=-10&requesttoken=' + token;
+        	$('audio:first-child').attr('src',url); 
+			$('audio')[0].play();
         	$('#word').text(wordlist[i]);
         	$('#wordimg').attr('src', "img/"+wordlist[i].toLowerCase()+".jpg");
         	$('#wordimg').css("display", "block");
@@ -42,9 +43,24 @@ $(document).ready(function() {
        	}, 5000);
 	});
 	
-	
+
+
 	function load() {
-		var chart = window.store.get($.getUrlParam('chart'));
+	    var chart = window.store.get($.getUrlParam('chart'));
+		var ths="";
+		var tds="";
+		var list="";
+		for(var i = 0; i< chart.content.length; i++){
+			ths = ths + "<th>" +chart.content[i].name+"</th>";
+			if(chart.content[i].words){
+				list = chart.content[i].words.join("<br>");
+				
+			}
+			tds = tds +"<td>" + list + "</td>";
+		}
+		$("#chartTable").append("<tr>"+ ths +"</tr>");
+		$("#chartTable").append("<tr>"+ tds +"</tr>");
+	
 		$("#edit").attr('href','editChart.html?chart='+$.getUrlParam('chart'));
 		var ths="";
 		var tds="";
