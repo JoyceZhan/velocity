@@ -25,6 +25,7 @@ $(document).ready(function() {
 	if(wordlist.length == 0) return;
 	
 	var token,isPlaying=false;
+	var index = 0;
 	$.ajax({
 		url : "http://api.naturalreaders.com/v2/auth/requesttoken?callback=velo&appid=pelc790w2bx&appsecret=2ma3jkhafcyscswg8wgk00w0kwsog4s",
 	    dataType:'JSONP'
@@ -32,29 +33,29 @@ $(document).ready(function() {
 		token = response.requesttoken;
 		$('#word').text("Intoning start ...");
 		isPlaying = true;
-		playAWord(0);
+		index = 0;
+		playAWord();
+		$('audio:first-child').bind('ended', function(){
+			console.log("play "+(index-1)+" : "+wordlist[index-1]);
+			console.log($('audio')[0].duration);
+		    setTimeout(playAWord(), 900000);		    
+		});
 	});
 	$("#again").click(function(){
-		playAWord(0);
+		index = 0;
+		playAWord();
 	});
 	
-	function playAWord(i){
-		console.log("play "+i+" : "+wordlist[i]);
-    	$('#word').text(wordlist[i]);
-    	$('#wordimg').attr('src', "img/"+wordlist[i].toLowerCase()+".jpg");
+	function playAWord(){		
+    	$('#word').text(wordlist[index]);
+    	$('#wordimg').attr('src', "img/"+wordlist[index].toLowerCase()+".jpg");
     	$('#wordimg').css("display", "block");
     	
-		var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[i] +'&r=1&s=-10&requesttoken=' + token;
+		var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[index] +'&r=1&s=-10&requesttoken=' + token;
 		$('audio:first-child').attr('src',url); 
 		$('audio')[0].play();
-			if(i<= wordlist.length-2){
-			//$('audio:first-child').unbind('ended');
-			$('audio:first-child').bind('ended', function(){
-				console.log($('audio')[0].duration);
-			    setTimeout(playAWord(i+1), 90000);
-			    
-			});
-		}else{
+		index++;
+		if(index > wordlist.length-1){
 			$('audio:first-child').unbind('ended');
 		}
 	}
