@@ -38,7 +38,7 @@ $(document).ready(function() {
 		$('audio:first-child').bind('ended', function(){
 			console.log("play "+(index-1)+" : "+wordlist[index-1]);
 			console.log($('audio')[0].duration);
-		    setTimeout(playAWord(), 900000);		    
+		    setTimeout(function(){playAWord();}, $('audio')[0].duration*1000);		    
 		});
 	});
 	$("#again").click(function(){
