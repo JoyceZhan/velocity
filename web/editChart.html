@@ -12,6 +12,10 @@
 </head>
 <body>
 <div style="margin: 20px;">
+	<div style="float: right">		
+		<a id="back" href="index.html" target="_self">Back to list</a> | 
+		<a id="intone">Intone</a>
+	</div>
     <h3>Edit Chart Page</h3>
 	<div class="modal-label">Chart Name: </div>
 	<input type="text" id="chartName" class="form-control" placeholder="Chart Name" style="width:300px;">
@@ -19,10 +23,6 @@
 	
 	<table class="table" id="chartTable" contenteditable="true" cellspacing ="30px" style="margin:20px 0px;"></table>
 	<button type="button" href="javascript:void();" id="saveAll">Save All</button>
-	<div>		
-		<a id="back" href="index.html" target="_self">Back to list</a> | 
-		<a id="entone">Entone</a>
-	</div>
 </div>
 </body>
 <script type="text/javascript">
@@ -64,7 +64,7 @@ $(document).ready(function() {
 		}
 		$("#chartTable").append("<tr>"+ ths +"</tr>");
 		$("#chartTable").append("<tr>"+ tds +"</tr>");
-		$("#entone").attr('href','intone.html?chart='+$.getUrlParam('chart'));
+		$("#intone").attr('href','intone.html?chart='+$.getUrlParam('chart'));
 	}
 });
 </script>
