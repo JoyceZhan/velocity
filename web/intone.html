@@ -3,21 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
 <script type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="js/jq-ext.js"></script>
 <script type="text/javascript" src="js/lib/store.js"></script>
+<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
 <link type="text/css" rel="stylesheet" href="css/intone.css">
 </head>
 <body>
-<audio controls='controls'> 
-    <source id='mp3' src=''/>
-</audio>
-<input type="button" id="again" value="Again"></input>
-<table id="chartTable" contenteditable="false" cellspacing ="30px"></table>
-<div id='word'> </div>
-<img id="wordimg" onerror="this.style.display='none'""/>
-<div>
-	<a id="edit">Edit</a>	
+<div style="margin: 20px;">
+    <h3>Intone Page</h3>
+	<audio controls='controls' style="position:absolute;left:-9999px;"> 
+	    <source id='mp3' src=''/>
+	</audio>
+
+    <div style="padding:10px 0;">
+		<button type="button" class="btn btn-default">
+		  <span class="glyphicon glyphicon-play" aria-hidden="true"></span> Star
+		</button>
+		
+		<button type="button" class="btn btn-default">
+	      <span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause
+	    </button>
+	    
+	    <button type="button" class="btn btn-default" id="again">
+	      <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Replay
+	    </button>
+	</div>
+	
+	<!--  <input type="button" id="again" value="Again"></input> -->
+	<table id="chartTable" contenteditable="false" cellspacing ="30px" class="table" style="width:60%"></table>
+	<div id='word'> </div>
+	<img id="wordimg" onerror="this.style.display='none'""/>
+	<div>
+	    <a id="back" href="index.html" target="_self">Back to list</a> | 
+		<a id="edit">Edit</a>	
+	</div>
 </div>
 </body>
 <script type="text/javascript">
