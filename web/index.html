@@ -28,7 +28,7 @@
 </head>
 <body>
 <div style="margin: 20px;">
-    <h3>Charts List</h3>
+    <h3>Chart List</h3>
 	<ul id="chartList" class="list-group" style="width:300px;"></ul>
 	<button type="button" value="Create Chart" class="btn btn-primary" data-toggle="modal" data-target="#myModal" >
 	+ Create Chart
@@ -102,6 +102,11 @@
 
     $('#modalSave').click(function(){
         var chartName = $("#chartName").val();
+        if ($.trim(chartName) == ""){
+        	alert("Chart name can't be empty.");
+        	$("#chartName").focus();
+            return;
+        }
         if(window.store.has(chartName)){
             alert("This chart name already exists.");
             $("#chartName").focus();
@@ -114,8 +119,7 @@
             chart.content.push({name:cols[i]});
         }
         window.store.set(chart.name, chart);
-        window.location.href = "editChart.html?chart="+chart.name;//TODO
+        window.location.href = "editChart.html?chart="+chart.name;
     });
-//window.store.get
 </script>
 </html>
