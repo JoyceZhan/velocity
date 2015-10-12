@@ -6,56 +6,92 @@
 <script type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="js/jq-ext.js"></script>
 <script type="text/javascript" src="js/lib/store.js"></script>
+<link type="text/css" rel="stylesheet" href="css/intone.css">
 </head>
 <body>
-<audio>
-    <source id='mp3' src='' />
+<audio controls='controls'> 
+    <source id='mp3' src=''/>
 </audio>
+<input type="button" id="again" value="Again"></input>
+<table id="chartTable" contenteditable="false" cellspacing ="30px"></table>
 <div id='word'> </div>
 <img id="wordimg" onerror="this.style.display='none'""/>
 <div>
-	<a id="edit">Edit</a>
+	<a id="edit">Edit</a>	
 </div>
 </body>
 <script type="text/javascript">
 $(document).ready(function() {
 	var wordlist = load();
+	if(wordlist.length == 0) return;
+	
+
+	var token,isPlaying=false;
+	var index = 0;
 	$.ajax({
 		url : "http://api.naturalreaders.com/v2/auth/requesttoken?callback=velo&appid=pelc790w2bx&appsecret=2ma3jkhafcyscswg8wgk00w0kwsog4s",
 	    dataType:'JSONP'
 	}).done(function(response) {
-		var token = response.requesttoken;
-		$('#word').text("Intoning start ...");
-		var i = 0;
-		var intone = setInterval(function(){
-        	var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[i] +'&r=1&s=-10&requesttoken=' + token;
-        	$('audio:first-child').attr('src',url);       	
-        	$('audio')[0].play();
-        	$('#word').text(wordlist[i]);
-        	$('#wordimg').attr('src', "img/"+wordlist[i].toLowerCase()+".jpg");
-        	$('#wordimg').css("display", "block");
-        	i++;
-        	if (i >= wordlist.length){
-        		window.clearInterval(intone);
-        		//$('#word').text("Intoning completed.");
-        	}
-       	}, 5000);
+		token = response.requesttoken;
+		isPlaying = true;
+		index = 0;
+		playAWord();    
+	});
+	$("#again").click(function(){
+		index = 0;
+		playAWord();
 	});
 	
+	function bindAudioEnded(){
+			$('audio:first-child').bind('ended', function(){
+			console.log("play "+(index-1)+" : "+wordlist[index-1]);
+			console.log($('audio')[0].duration);
+		    setTimeout(function(){playAWord();}, $('audio')[0].duration*1000);		    
+		});
+	}
 	
+	function playAWord(){				
+		if(index > 0) {
+			$('#word'+(index-1)).removeClass('highlight');			
+		} else if(index == 0){
+			bindAudioEnded();
+			$('#word'+(wordlist.length-1)).removeClass('highlight');
+		}
+ 		$('#word'+index).addClass('highlight');
+    	$('#wordimg').attr('src', "img/"+wordlist[index].toLowerCase()+".jpg");
+    	$('#wordimg').css("display", "block");
+    	
+		var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[index] +'&r=1&s=-10&requesttoken=' + token;
+		$('audio:first-child').attr('src',url); 
+	    $('audio')[0].play();		
+		index++;
+		if(index > wordlist.length-1){
+			$('audio:first-child').unbind('ended');
+		}
+	}
+
 	function load() {
-		var chart = window.store.get($.getUrlParam('chart'));
-		$("#edit").attr('href','editChart.html?chart='+$.getUrlParam('chart'));
+	    var chart = window.store.get($.getUrlParam('chart'));
 		var ths="";
 		var tds="";
+
+		$("#edit").attr('href','editChart.html?chart='+$.getUrlParam('chart'));
+
 		var wordlist=[];
 		for(var i = 0; i< chart.content.length; i++){
+			ths = ths + "<th>" +chart.content[i].name+"</th>";
 			var words = chart.content[i].words;
+			if(words == undefined) continue;
+			var list="";
 			for(var j=0; j< words.length; j++)
 				if (words[j] != ""){
+				    list = list+ "<div id='word"+wordlist.length+"'>" + words[j] + "</div>"
 					wordlist.push(words[j]);
-				}			
+				}	
+			tds = tds +"<td>" + list + "</td>";
 		}
+		$("#chartTable").append("<tr>"+ ths +"</tr>");
+		$("#chartTable").append("<tr>"+ tds +"</tr>");
 		return wordlist;
 	}
 });	
