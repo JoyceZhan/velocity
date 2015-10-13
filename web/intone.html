@@ -12,25 +12,24 @@
 </head>
 <body>
 <div style="margin: 20px;">
-    <h3 id="chartName"></h3>
-    <div>
-		<audio controls = 'controls' id="audio1"> 
-		    <source id='mp3' src=''/>
-		</audio>
-	</div>
-
 	<div style="float: right">
 	    <a id="back" href="index.html" target="_self">Back to list</a> | 
 		<a id="edit">Edit</a>	
 	</div>
-    <div style="padding:10px 0;">
-     
-    	<button type="button" class="btn btn-default" id="again">
-	      <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Replay
-	    </button>    
-	</div>	
-	<img id="wordimg" onerror="this.style.display='none'" style="float:right"/>
-	<table id="chartTable" contenteditable="false" cellspacing ="30px" class="table velocityTbl" style="width:60%"></table>	
+    <h3 id="chartName"></h3>
+    <button type="button" class="btn btn-default" id="again">
+	  <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Replay
+	</button>
+
+	<div style="margin:10px;">
+		<img id="wordimg" onerror="this.style.display='none'" style="float:right" width="400"/>
+		<table id="chartTable" contenteditable="false" cellspacing ="30px" class="table velocityTbl" style="width:60%"></table>	
+		<div>
+			<audio controls = 'controls' id="audio1"> 
+			    <source id='mp3' src=''/>
+			</audio>
+		</div>
+	</div>
 </div>
 </body>
 <script type="text/javascript">
