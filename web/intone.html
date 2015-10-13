@@ -99,19 +99,22 @@ $(document).ready(function() {
 
 		$("#edit").attr('href','editChart.html?chart='+$.getUrlParam('chart'));
 
-		var wordlist=[];
+		var wordlist=[];var trimmedWord;
 		for(var i = 0; i< chart.content.length; i++){
 			ths = ths + "<th>" +chart.content[i].name+"</th>";
 			var words = chart.content[i].words;
 			if(words == undefined) continue;
 			var list="";
-			for(var j=0; j< words.length; j++)
-				if (words[j] != ""){
+			for(var j=0; j< words.length; j++){
+				trimmedWord = words[j].trim();
+				if (trimmedWord != ""){
 				    list = list+ "<div id='word"+wordlist.length+"' ondblclick='dblClickWord("+wordlist.length+")'>" + words[j] + "</div>";
-					wordlist.push(words[j]);
+					wordlist.push(trimmedWord);
 				} else {
 					list = list+ "<br>"
 				}
+			}
+
 			tds = tds +"<td>" + list + "</td>";
 		}
 		$("#chartTable").append("<tr>"+ ths +"</tr>");
