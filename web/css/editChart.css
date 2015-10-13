@@ -1,12 +1,13 @@
 #chartTable {
 	width: 100%;
 	text-align: center;
+	font-size: 16px;
 }
 
 
 #chartTable tr td {
 	border: 1px solid #ccc;
-	height: 400px;
+	height: 300px;
 }
 
 #chartTable tr th {

@@ -1,6 +1,6 @@
 .highlight{
     zoom: 1.5;
-    color: blue;
+    color: #337ab7;
 }
 div{
 	-webkit-user-select: none; /* Chrome/Safari */        
@@ -10,4 +10,8 @@ div{
 	/* Rules below not implemented in browsers yet */
 	-o-user-select: none;
 	user-select: none;
+}
+
+.velocityTbl {
+    font-size: 16px;
 }
