@@ -21,8 +21,8 @@
 	<input type="text" id="chartName" class="form-control" placeholder="Chart Name" style="width:300px;">
 	<!--  (Note: If chart name is changed, a new chart is cloned, the old chart won't be deleted.)<br><br> -->
 	
-	<table class="table" id="chartTable" contenteditable="true" cellspacing ="30px" style="margin:20px 0px;"></table>
-	<button type="button" href="javascript:void();" id="saveAll">Save All</button>
+	<table class="table" id="chartTable" contenteditable="plaintext-only" cellspacing ="30px" style="margin:20px 0px;"></table>
+	<button type="button" href="javascript:void();" id="saveAll">Save All</button><span id="saveResult"></span>
 </div>
 </body>
 <script type="text/javascript">
@@ -46,6 +46,8 @@ $(document).ready(function() {
 		}
 		
 		window.store.set(chart.name, chart);
+		$('#saveResult').text("Saved");
+		setTimeout(function(){$('#saveResult').text("");}, 1000);		
 	}
 	
 	function load() {		
