@@ -12,8 +12,8 @@
 </head>
 <body>
 <div style="margin: 20px;">
-    
-	<audio controls = 'controls'> 
+
+	<audio controls = 'controls' id="audio1"> 
 	    <source id='mp3' src=''/>
 	</audio>
 
@@ -51,7 +51,7 @@ $(document).ready(function() {
 		playAWord();    
 	});
 	$("#again").click(function(){
-		$('audio:first-child').unbind('ended');
+		$('#audio1:first-child').unbind('ended');
 		index = 0;
 		playAWord();
 	});
@@ -61,10 +61,10 @@ $(document).ready(function() {
 	});
 	
 	function bindAudioEnded(){
-			$('audio:first-child').bind('ended', function(){
+			$('#audio1:first-child').bind('ended', function(){
 			console.log("play "+(index-1)+" : "+wordlist[index-1]);
-			console.log($('audio')[0].duration);
-		    setTimeout(function(){playAWord();}, $('audio')[0].duration*1000);		    
+			console.log($('#audio1')[0].duration);
+		    setTimeout(function(){playAWord();}, $('#audio1')[0].duration*1000);		    
 		});
 	}
 	
@@ -81,12 +81,12 @@ $(document).ready(function() {
     	$('#wordimg').css("display", "block");
     	
 		var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[index] +'&r=1&s=-10&requesttoken=' + token;
-		$('audio:first-child').attr('src',url); 
-	    $('audio')[0].play();
+		$('#audio1:first-child').attr('src',url); 
+	    $('#audio1')[0].play();
 	    isPlaying = true;
 		index++;
 		if(index > wordlist.length-1){
-			$('audio:first-child').unbind('ended');
+			$('#audio1:first-child').unbind('ended');
 		}
 	}
 
