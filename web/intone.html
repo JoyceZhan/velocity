@@ -46,12 +46,16 @@ function dblClickWord(i){
 
 function bindAudioEnded(){
 	$('#audio1:first-child').bind('ended', function(){
-    setTimeout(function(){playAWord();}, $('#audio1')[0].duration*1000);	
-	index++;
-	if(index > wordlist.length-1){
-		$('#audio1:first-child').unbind('ended');
-	}
-});
+		var duration = $('#audio1')[0].duration*1000 - 1000;
+		if(duration < 0){
+			duration = 0;
+		}
+	    setTimeout(function(){playAWord();}, duration);	
+		index++;
+		if(index > wordlist.length-1){
+			$('#audio1:first-child').unbind('ended');
+		}
+	});
 }	
 
 function playAWord(){				
