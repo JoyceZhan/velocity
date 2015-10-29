@@ -23,11 +23,12 @@
 
 	<div style="margin:10px;">
 		<img id="wordimg" onerror="this.style.display='none'" style="float:right" width="400"/>
-		<table id="chartTable" contenteditable="false" cellspacing ="30px" class="table velocityTbl" style="width:60%"></table>	
+		<table id="chartTable" contenteditable="false" cellspacing ="30px" class="table velocityTbl" style="width:60%"></table>		
 		<div>
 			<audio controls = 'controls' id="audio1"> 
 			    <source id='mp3' src=''/>
 			</audio>
+			Interval: <input type="text" id="interval" onchange="changeInterval();" size="5"/>ms
 		</div>
 	</div>
 </div>
@@ -36,6 +37,12 @@
 var token,isPlaying=false, lastHighLight;
 var index = 0;
 var wordlist;
+var interval;
+
+function changeInterval(){	
+	interval = Number($("#interval").val());
+	window.store.set("velocity.interval", interval);
+}
 
 function dblClickWord(i){
 	$('#audio1:first-child').unbind('ended');
@@ -46,28 +53,33 @@ function dblClickWord(i){
 
 function bindAudioEnded(){
 	$('#audio1:first-child').bind('ended', function(){
-		var duration = $('#audio1')[0].duration*1000 - 1000;
+		var duration = new Number($('#audio1')[0].duration*1000 - 3000 + interval);
 		if(duration < 0){
 			duration = 0;
 		}
+		console.info(duration);
 	    setTimeout(function(){playAWord();}, duration);	
 		index++;
-		if(index > wordlist.length-1){
+		if(index > wordlist.length-2){
 			$('#audio1:first-child').unbind('ended');
 		}
 	});
 }	
 
-function playAWord(){				
+function playAWord(){
 	if(index >= 0) {
 		$('#word'+lastHighLight).removeClass('highlight');			
 	} 
 	$('#word'+index).addClass('highlight');
 	lastHighLight = index;
-	$('#wordimg').attr('src', "img/"+wordlist[index].toLowerCase()+".jpg");
+	var img = wordlist[index].wordImg;
+	if (!img){
+		wordlist[index].wordImg = wordlist[index].wordStr.toLowerCase()+".jpg";
+	}
+	$('#wordimg').attr('src', "img/"+ wordlist[index].wordImg);
 	$('#wordimg').css("display", "block");
 	
-	var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[index] +'&r=1&s=-10&requesttoken=' + token;
+	var url = 'http://api.naturalreaders.com/v2/tts/?t='+ wordlist[index].wordStr +'&r=1&s=-10&requesttoken=' + token;
 	$('#audio1:first-child').attr('src',url); 
     $('#audio1')[0].play();
     isPlaying = true;
@@ -95,14 +107,22 @@ $(document).ready(function() {
 	});
 	
 	function load() {
+		interval = window.store.get("velocity.interval");
+		if (!interval) {
+			interval = 0;
+		}
+		$("#interval").val(interval); 
 	    var chart = window.store.get($.getUrlParam('chart'));
 	    $('#chartName').text(chart.name);
 		var ths="";
 		var tds="";
 
 		$("#edit").attr('href','editChart.html?chart='+$.getUrlParam('chart'));
-
-		var wordlist=[];var trimmedWord;
+		imgPattern =new RegExp("\{(.| )+?\}","igm");
+		roundPattern = new RegExp("\\((.| )+?\\)","igm");
+		squarePattern = new RegExp("\\[(.| )+?\\]","igm");
+		
+		var wordlist=[];var trimmedWord,wordImg,wordStr;
 		for(var i = 0; i< chart.content.length; i++){
 			ths = ths + "<th>" +chart.content[i].name+"</th>";
 			var words = chart.content[i].words;
@@ -110,9 +130,14 @@ $(document).ready(function() {
 			var list="";
 			for(var j=0; j< words.length; j++){
 				trimmedWord = words[j].trim();
-				if (trimmedWord != ""){
-				    list = list+ "<div id='word"+wordlist.length+"' ondblclick='dblClickWord("+wordlist.length+")'>" + words[j] + "</div>";
-					wordlist.push(trimmedWord);
+				if (trimmedWord != ""){					
+					wordImg = words[j].match(imgPattern);
+					if(wordImg){
+						wordImg = wordImg[0].substring(1,wordImg[0].length-1);
+					}
+					wordStr = words[j].replace(imgPattern, "").replace(roundPattern, "").replace(squarePattern, "").trim();
+				    list = list+ "<div id='word"+wordlist.length+"' ondblclick='dblClickWord("+wordlist.length+")'>" + wordStr + "</div>";
+					wordlist.push({'wordStr':wordStr, 'wordImg': wordImg});
 				} else {
 					list = list+ "<br>"
 				}
