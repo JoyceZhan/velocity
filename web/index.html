@@ -104,6 +104,9 @@
 	var charts = window.store.keys();
 	for(var i=0; i<charts.length; i++){
 		if (charts[i]) {
+			if(charts[i] == "velocity.interval") {
+				continue;
+			}
 		    $("#chartList").append('<li class="list-group-item"><a href="intone.html?chart=' + charts[i] + '">'
 				 + charts[i] + '</a></li>');
 		}
