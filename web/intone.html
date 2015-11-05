@@ -90,12 +90,13 @@ function playAWord(){
 }
 	
 $(document).ready(function() {
+	load();
 	$.ajax({
 		url : "http://api.naturalreaders.com/v2/auth/requesttoken?callback=velo&appid=pelc790w2bx&appsecret=2ma3jkhafcyscswg8wgk00w0kwsog4s",
 	    dataType:'JSONP'
 	}).done(function(response) {
 		token = response.requesttoken;
-		load();
+		loadAudios();
 		if(wordlist.length == 0) return;
 		index = 0;
 		playNextWord();
@@ -146,7 +147,9 @@ $(document).ready(function() {
 		}
 		$("#chartTable").append("<tr>"+ ths +"</tr>");
 		$("#chartTable").append("<tr>"+ tds +"</tr>");
-		
+	};
+	
+	function loadAudios(){
 		for(var i=0; i< wordlist.length; i++){
 			wordStr = wordlist[i].wordStr;
 			var src='http://api.naturalreaders.com/v2/tts/?t='+ wordStr +'&r=1&s=-10&requesttoken=' + token;
@@ -161,7 +164,7 @@ $(document).ready(function() {
 			audioList.push(audioElement);			
 		}
 		bindAudioError();
-	};
+	}
 	
 });	
 </script>
