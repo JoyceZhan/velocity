@@ -23,10 +23,10 @@
 
 	<div style="margin:10px;">
 		<img id="wordimg" onerror="this.style.display='none'" style="float:right" width="400"/>
-		<table id="chartTable" contenteditable="false" cellspacing ="30px" class="table velocityTbl" style="width:60%"></table>		
-		<div id="audioDiv">
-
-			Interval: <input type="text" id="interval" onchange="changeInterval();" size="5"/>ms
+		<table id="chartTable" contenteditable="false" cellspacing ="30px" class="table velocityTbl" style="width:60%"></table>	
+		Interval: <input type="text" id="interval" onchange="changeInterval();" size="5"/>ms
+		<div style="height:800px"></div>
+		<div id="audioDiv">			
 		</div>
 	</div>
 </div>
@@ -42,12 +42,11 @@ function changeInterval(){
 	window.store.set("velocity.interval", interval);
 }
 
-function dblClickWord(i){	
+function dblClickWord(i){
 	index = i;
 	if (lastHighLight == audioList.length-1){
 		playNextWord();
 	}
-	//playNextWord();
 }
 
 function bindAudioError(){
@@ -60,6 +59,20 @@ function bindAudioError(){
 }
 
 function playNextWord(){
+	var duration = -1;
+	if(index > 0) {
+		duration = new Number(audioList[lastHighLight][0].duration*1000 + interval);
+	}
+	if(duration < 0){
+		duration = 0;
+	}
+	//console.info(duration);
+    setTimeout(function(){
+    	playAWord();
+    }, duration);		    
+}
+
+function playAWord(){
 	if(lastHighLight!=-1) {
 		$('#word'+lastHighLight).removeClass('highlight');
 	}
@@ -72,19 +85,8 @@ function playNextWord(){
 	}
 	$('#wordimg').attr('src', "img/"+ wordlist[index].wordImg);
 	$('#wordimg').css("display", "block");
-	
-	var duration = -1;
-	if(index > 0) {
-		duration = new Number(audioList[index-1][0].duration*1000 + interval);
-	}
-	if(duration < 0){
-		duration = 0;
-	}
-	//console.info(duration);
-    setTimeout(function(){
-    	audioList[index][0].play();
-    	index++;
-    }, duration);		    
+	audioList[index][0].play();
+	index++;
 }
 	
 $(document).ready(function() {
