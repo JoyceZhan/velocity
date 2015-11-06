@@ -59,6 +59,10 @@ function bindAudioError(){
 }
 
 function playNextWord(){
+	if(audioList[index][0].error){
+		console.info(audioList[index][0].error);
+		audioList[index][0].load();
+	}
 	var duration = -1;
 	if(index > 0) {
 		duration = new Number(audioList[lastHighLight][0].duration*1000 + interval);
